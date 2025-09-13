@@ -56,3 +56,10 @@ export async function login(req, res){
   const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
   return res.json({ token, user: user.toPublicJSON() });
 }
+
+// add this export to src/controllers/authController.js
+export async function me(req, res) {
+  // requireAuth middleware must set req.user (full mongoose doc)
+  if (!req.user) return res.status(401).json({ message: 'Unauthenticated' });
+  return res.json({ user: req.user.toPublicJSON() });
+}
