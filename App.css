@@ -1,0 +1,118 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card, .dashboard-card {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  width: 400px;
+  text-align: center;
+}
+
+.login-card h2, .dashboard-card h2 {
+  margin: 0 0 10px;
+}
+
+.login-card input, .dashboard-card input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.login-card input:focus, .dashboard-card input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 5px rgba(37,117,252,0.5);
+  outline: none;
+}
+
+.login-card button, .dashboard-card button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2575fc;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-card button:hover, .dashboard-card button:hover {
+  background-color: #1a5bcc;
+}
+
+.message {
+  margin-top: 15px;
+  font-weight: bold;
+  color: red;
+}
+
+.link {
+  color: #2575fc;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard specific */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+}
+
+.logout-btn:hover {
+  background-color: #a71d2a;
+}
+
+.add-event h3, .event-list h3 {
+  margin-top: 20px;
+  color: #333;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.event-card {
+  background-color: #f0f2f5;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
