@@ -4,21 +4,20 @@ import {
   getAllPlans,
   getActivePlans,
   updatePlan,
-  deletePlan,
+  deletePlan
 } from "../controllers/planController.js";
 
-import { requireAuth } from "../middleware/auth.js"; // protects routes
-// import { requireAdmin } from "../middleware/roleAuth.js"; // if you add role-based auth
+import { requireAuth, requireRole } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// User endpoint
-router.get("/active", requireAuth, getActivePlans);
+// Admin routes
+router.post("/", requireAuth, requireRole("admin"), createPlan);
+router.get("/", requireAuth, requireRole("admin"), getAllPlans);
+router.put("/:id", requireAuth, requireRole("admin"), updatePlan);
+router.delete("/:id", requireAuth, requireRole("admin"), deletePlan);
 
-// Admin endpoints
-router.post("/", requireAuth, createPlan);
-router.get("/", requireAuth, getAllPlans);
-router.put("/:id", requireAuth, updatePlan);
-router.delete("/:id", requireAuth, deletePlan);
+// User route
+router.get("/active", requireAuth, getActivePlans);
 
 export default router;
