@@ -1,186 +1,90 @@
+// src/services/admin.js
+import axios from "axios";
+
+const BASE_URL = "http://localhost:5000"; // 🔹 Change to your backend URL
+
+const api = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
+
 const Admin = {
-  plans: {
-    getAllPlans: {
-      method: "GET",
-      url: "/api/plans",
-      response: [
-        {
-          id: "string",
-          name: "string",
-          price: "number",
-          quota: "string",
-          status: "active | inactive"
-        }
-      ]
+    plans: {
+        getAllPlans: async () => {
+            const res = await api.get("/api/plans");
+            return res.data;
+        },
+        getPlanById: async (id) => {
+            const res = await api.get(`/api/plans/${id}`);
+            return res.data;
+        },
+        createPlan: async (payload) => {
+            const res = await api.post("/api/plans", payload);
+            return res.data;
+        },
+        updatePlan: async (id, payload) => {
+            const res = await api.put(`/api/plans/${id}`, payload);
+            return res.data;
+        },
+        deletePlan: async (id) => {
+            const res = await api.delete(`/api/plans/${id}`);
+            return res.data;
+        },
     },
-    getPlanById: {
-      method: "GET",
-      url: "/api/plans/{id}",
-      response: {
-        id: "string",
-        name: "string",
-        description: "string",
-        price: "number",
-        quota: "string",
-        features: ["string"],
-        status: "active | inactive"
-      }
-    },
-    createPlan: {
-      method: "POST",
-      url: "/api/plans",
-      request: {
-        name: "string",
-        description: "string",
-        price: "number",
-        quota: "string",
-        features: ["string"]
-      },
-      response: {
-        message: "Plan created successfully",
-        planId: "string"
-      }
-    },
-    updatePlan: {
-      method: "PUT",
-      url: "/api/plans/{id}",
-      request: {
-        name: "string",
-        description: "string",
-        price: "number",
-        quota: "string",
-        features: ["string"],
-        status: "active | inactive"
-      },
-      response: {
-        message: "Plan updated successfully"
-      }
-    },
-    deletePlan: {
-      method: "DELETE",
-      url: "/api/plans/{id}",
-      response: {
-        message: "Plan deleted successfully"
-      }
-    }
-  },
 
-  subscriptions: {
-    getUserSubscriptions: {
-      method: "GET",
-      url: "/api/subscriptions/user/{userId}",
-      response: [
-        {
-          id: "string",
-          planId: "string",
-          planName: "string",
-          status: "active | cancelled | expired",
-          startDate: "ISODate",
-          endDate: "ISODate",
-          autoRenew: true
-        }
-      ]
+    subscriptions: {
+        getUserSubscriptions: async (userId) => {
+            const res = await api.get(`/api/subscriptions/user/${userId}`);
+            return res.data;
+        },
+        createSubscription: async (payload) => {
+            const res = await api.post("/api/subscriptions", payload);
+            return res.data;
+        },
+        updateSubscription: async (id, payload) => {
+            const res = await api.put(`/api/subscriptions/${id}`, payload);
+            return res.data;
+        },
+        cancelSubscription: async (id) => {
+            const res = await api.delete(`/api/subscriptions/${id}`);
+            return res.data;
+        },
     },
-    createSubscription: {
-      method: "POST",
-      url: "/api/subscriptions",
-      request: {
-        userId: "string",
-        planId: "string",
-        autoRenew: true
-      },
-      response: {
-        message: "Subscription created successfully",
-        subscriptionId: "string"
-      }
-    },
-    updateSubscription: {
-      method: "PUT",
-      url: "/api/subscriptions/{id}",
-      request: {
-        planId: "string",
-        autoRenew: true,
-        status: "active | cancelled"
-      },
-      response: {
-        message: "Subscription updated successfully"
-      }
-    },
-    cancelSubscription: {
-      method: "DELETE",
-      url: "/api/subscriptions/{id}",
-      response: {
-        message: "Subscription cancelled successfully"
-      }
-    }
-  },
 
-  discounts: {
-    getAllDiscounts: {
-      method: "GET",
-      url: "/api/discounts",
-      response: [
-        {
-          id: "string",
-          code: "string",
-          description: "string",
-          percentage: "number",
-          validFrom: "ISODate",
-          validTo: "ISODate",
-          status: "active | expired"
-        }
-      ]
+    discounts: {
+        getAllDiscounts: async () => {
+            const res = await api.get("/api/discounts");
+            return res.data;
+        },
+        createDiscount: async (payload) => {
+            const res = await api.post("/api/discounts", payload);
+            return res.data;
+        },
     },
-    createDiscount: {
-      method: "POST",
-      url: "/api/discounts",
-      request: {
-        code: "string",
-        description: "string",
-        percentage: "number",
-        validFrom: "ISODate",
-        validTo: "ISODate"
-      },
-      response: {
-        message: "Discount created successfully",
-        discountId: "string"
-      }
-    }
-  },
 
-  analytics: {
-    getTopPlans: {
-      method: "GET",
-      url: "/api/analytics/top-plans?period=month|year",
-      response: [
-        {
-          planId: "string",
-          planName: "string",
-          subscriptions: "number"
-        }
-      ]
+    analytics: {
+        getTopPlans: async (period) => {
+            const res = await api.get(`/api/analytics/top-plans?period=${period}`);
+            return res.data;
+        },
+        getSubscriptionTrends: async () => {
+            const res = await api.get("/api/analytics/trends");
+            return res.data;
+        },
+        predictChurn: async () => {
+            const res = await api.get("/api/analytics/churn");
+            return res.data;
+        },
     },
-    getSubscriptionTrends: {
-      method: "GET",
-      url: "/api/analytics/trends",
-      response: {
-        month: "string",
-        activeSubscriptions: "number",
-        cancelledSubscriptions: "number"
-      }
+
+    logs: {
+        getAuditLogs: async () => {
+            const res = await api.get("/api/logs");
+            return res.data;
+        },
     },
-    predictChurn: {
-      method: "GET",
-      url: "/api/analytics/churn",
-      response: [
-        {
-          userId: "string",
-          userName: "string",
-          likelihoodToCancel: "number (0-100)"
-        }
-      ]
-    }
-  }
 };
 
 export default Admin;
