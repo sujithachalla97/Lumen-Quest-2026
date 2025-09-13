@@ -1,25 +1,36 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import BrowsePlans from "./pages/BrowsePlans";
-import MySubscriptions from "./pages/MySubscriptions";
-import NotFound from "./pages/NotFound";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import PlansPage from "./pages/Plans";
+import SubscriptionsPage from "./pages/Subscriptions";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/plans" element={<BrowsePlans />} />
-        <Route path="/my" element={<MySubscriptions />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-      <div className="footer">
-        Built for Lumen Quest 2.0 — Subscription Management (Frontend demo)
-      </div>
-    </>
+      {/* Protected dashboard routes */}
+      <Route
+        path="/dashboard/*"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      >
+        {/* nested routes rendered inside Dashboard (Dashboard must render <Outlet /> where content should go) */}
+        <Route index element={<PlansPage />} />
+        <Route path="plans" element={<PlansPage />} />
+        <Route path="subscriptions" element={<SubscriptionsPage />} />
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="." replace />} />
+      </Route>
+
+      {/* catch-all redirect to login */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
