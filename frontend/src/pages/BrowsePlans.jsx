@@ -1,9 +1,20 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { useSubscriptions } from "../context/SubscriptionContext";
 import PlanCard from "../components/PlanCard";
 import ActionModal from "../components/ActionModal";
 import Spinner from "../components/Spinner";
 import "./Plans.css";
+
+const featureLabels = {
+  PhoneService: "Phone Service",
+  OnlineSecurity: "Online Security",
+  OnlineBackup: "Online Backup",
+  DeviceProtection: "Device Protection",
+  TechSupport: "Tech Support",
+  StreamingTV: "Streaming TV",
+  StreamingMovies: "Streaming Movies",
+};
 
 export default function BrowsePlans() {
   const { plans, subscribe } = useSubscriptions();
@@ -20,7 +31,7 @@ export default function BrowsePlans() {
       setMessage("Failed to subscribe");
     } finally {
       setLoadingId(null);
-      setTimeout(() => setMessage(""), 2200);
+      setTimeout(() => setMessage(null), 3000);
     }
   };
 
@@ -28,29 +39,47 @@ export default function BrowsePlans() {
 
   return (
     <div className="plans-page">
-      <div className="container">
-        <h2 className="plans-title">Choose Your Perfect Plan</h2>
-        <p className="plans-subtitle">
-          Flexible and affordable subscription options designed to fit your
-          needs.
-        </p>
-
-        {message && <div className="alert mt">{message}</div>}
-
-        <div className="plans-grid">
-          {plans.map((p) => (
-            <div key={p.id}>
-              <PlanCard
-                plan={p}
-                onSubscribe={(id) => handleSubscribe(id)}
-                onSelect={(pl) => setSelected(pl)}
-              />
-              {loadingId === p.id && <div className="small">Processing...</div>}
-            </div>
-          ))}
+      {/* Hero Banner */}
+      <section className="plans-hero">
+        <div className="plans-hero-overlay">
+          <motion.div
+            className="plans-hero-content"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <h1 className="plans-title">Choose Your Perfect Plan</h1>
+            <p className="plans-subtitle">
+              Flexible and affordable subscription options designed to fit your
+              needs.
+            </p>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
+      {/* Plans Grid */}
+      <section className="plans-grid-section">
+        <div className="container">
+          {message && <div className="alert mt">{message}</div>}
+
+          <div className="plans-grid">
+            {plans.map((p) => (
+              <div key={p.id}>
+                <PlanCard
+                  plan={p}
+                  onSubscribe={(id) => handleSubscribe(id)}
+                  onSelect={(pl) => setSelected(pl)}
+                />
+                {loadingId === p.id && (
+                  <div className="small">Processing...</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Action Modal */}
       {selected && (
         <ActionModal
           title={`Plan: ${selected.name}`}
@@ -67,7 +96,7 @@ export default function BrowsePlans() {
           <div className="mt small">Features:</div>
           <ul>
             {selected.features.map((f, i) => (
-              <li key={i}>{f}</li>
+              <li key={i}>✅ {featureLabels[f] || f}</li>
             ))}
           </ul>
         </ActionModal>

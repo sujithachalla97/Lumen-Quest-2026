@@ -1,159 +1,129 @@
 // src/services/api.js
-const STORAGE_KEYS = {
-  PLANS: "sms_plans_v1",
-  SUBS: "sms_subs_v1",
-  USERS: "sms_users_v1",
-};
+// Dummy API service (mock data now, replace with real axios calls later)
 
-const wait = (ms = 400) => new Promise((res) => setTimeout(res, ms));
+let dummyPlans = [
+  {
+    id: "p_basic",
+    name: "Basic",
+    price: 299,
+    features: ["PhoneService", "OnlineBackup", "Month to Month"],
+  },
+  {
+    id: "p_plus",
+    name: "Plus",
+    price: 499,
+    features: [
+      "PhoneService",
+      "OnlineSecurity",
+      "OnlineBackup",
+      "StreamingTV",
+      "One Year",
+    ],
+  },
+  {
+    id: "p_ultra",
+    name: "Ultra",
+    price: 799,
+    features: [
+      "PhoneService",
+      "OnlineSecurity",
+      "OnlineBackup",
+      "DeviceProtection",
+      "TechSupport",
+      "StreamingTV",
+      "StreamingMovies",
+      "Two Year",
+    ],
+  },
+];
 
-// initial seed if not present
-function seed() {
-  if (!localStorage.getItem(STORAGE_KEYS.PLANS)) {
-    const plans = [
-      {
-        id: "p_basic",
-        name: "Basic",
-        price: 299,
-        quotaGB: 100,
-        features: ["100 GB data", "Standard support"],
-      },
-      {
-        id: "p_plus",
-        name: "Plus",
-        price: 499,
-        quotaGB: 300,
-        features: ["300 GB data", "Priority support"],
-      },
-      {
-        id: "p_ultra",
-        name: "Ultra",
-        price: 799,
-        quotaGB: 1024,
-        features: ["1 TB data", "24/7 support"],
-      },
-    ];
-    localStorage.setItem(STORAGE_KEYS.PLANS, JSON.stringify(plans));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.SUBS)) {
-    localStorage.setItem(STORAGE_KEYS.SUBS, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-    const users = [
-      { id: "u_user", name: "Demo User", role: "user" },
-      { id: "u_admin", name: "Admin", role: "admin" },
-    ];
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-  }
-}
-
-seed();
+let dummySubs = [];
 
 export const api = {
-  getPlans: async () => {
-    await wait();
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.PLANS) || "[]");
-  },
+  // ---------- PLANS ----------
+  getPlans: async () => Promise.resolve(dummyPlans),
 
   createPlan: async (plan) => {
-    await wait();
-    const plans = JSON.parse(localStorage.getItem(STORAGE_KEYS.PLANS) || "[]");
-    plans.push(plan);
-    localStorage.setItem(STORAGE_KEYS.PLANS, JSON.stringify(plans));
-    return plan;
+    dummyPlans.push(plan);
+    return Promise.resolve(plan);
   },
 
   updatePlan: async (id, patch) => {
-    await wait();
-    let plans = JSON.parse(localStorage.getItem(STORAGE_KEYS.PLANS) || "[]");
-    plans = plans.map((p) => (p.id === id ? { ...p, ...patch } : p));
-    localStorage.setItem(STORAGE_KEYS.PLANS, JSON.stringify(plans));
-    return plans.find((p) => p.id === id);
+    const idx = dummyPlans.findIndex((p) => p.id === id);
+    if (idx > -1) dummyPlans[idx] = { ...dummyPlans[idx], ...patch };
+    return Promise.resolve(dummyPlans[idx]);
   },
 
   deletePlan: async (id) => {
-    await wait();
-    let plans = JSON.parse(localStorage.getItem(STORAGE_KEYS.PLANS) || "[]");
-    plans = plans.filter((p) => p.id !== id);
-    localStorage.setItem(STORAGE_KEYS.PLANS, JSON.stringify(plans));
-    return true;
+    dummyPlans = dummyPlans.filter((p) => p.id !== id);
+    return Promise.resolve(true);
   },
 
-  // subscriptions
-  getSubscriptionsByUser: async (userId) => {
-    await wait();
-    const subs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUBS) || "[]");
-    return subs.filter((s) => s.userId === userId);
-  },
-
-  getAllSubscriptions: async () => {
-    await wait();
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SUBS) || "[]");
-  },
+  // ---------- SUBSCRIPTIONS ----------
+  getSubscriptionsByUser: async (userId) =>
+    Promise.resolve(dummySubs.filter((s) => s.userId === userId)),
 
   subscribe: async ({ userId, planId }) => {
-    await wait(600);
-    const subs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUBS) || "[]");
-    // create a subscription record
-    const id = `s_${Date.now()}`;
+    // cancel any existing active subscription for this user
+    dummySubs = dummySubs.map((s) =>
+      s.userId === userId && s.status === "active"
+        ? { ...s, status: "cancelled" }
+        : s
+    );
+
+    // create new subscription
     const newSub = {
-      id,
+      id: `s_${Date.now()}`,
       userId,
       planId,
       status: "active",
       startedAt: new Date().toISOString(),
-      autoRenew: true,
     };
-    subs.push(newSub);
-    localStorage.setItem(STORAGE_KEYS.SUBS, JSON.stringify(subs));
-    return newSub;
+    dummySubs.push(newSub);
+    return Promise.resolve(newSub);
   },
 
   changePlan: async ({ subId, newPlanId }) => {
-    await wait(500);
-    let subs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUBS) || "[]");
-    subs = subs.map((s) =>
-      s.id === subId
-        ? { ...s, planId: newPlanId, changedAt: new Date().toISOString() }
-        : s
-    );
-    localStorage.setItem(STORAGE_KEYS.SUBS, JSON.stringify(subs));
-    return subs.find((s) => s.id === subId);
+    const sub = dummySubs.find((s) => s.id === subId);
+    if (sub && sub.status === "active") {
+      sub.planId = newPlanId;
+      return Promise.resolve(sub);
+    }
+    return Promise.reject("No active subscription found to change");
   },
 
   cancelSubscription: async (subId) => {
-    await wait(300);
-    let subs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUBS) || "[]");
-    subs = subs.map((s) =>
-      s.id === subId
-        ? { ...s, status: "cancelled", cancelledAt: new Date().toISOString() }
+    dummySubs = dummySubs.map((s) =>
+      s.id === subId && s.status === "active"
+        ? { ...s, status: "cancelled" }
         : s
     );
-    localStorage.setItem(STORAGE_KEYS.SUBS, JSON.stringify(subs));
-    return subs.find((s) => s.id === subId);
+    return Promise.resolve(dummySubs.find((s) => s.id === subId));
   },
 
   renewSubscription: async (subId) => {
-    await wait(300);
-    let subs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SUBS) || "[]");
-    subs = subs.map((s) =>
-      s.id === subId
-        ? { ...s, status: "active", renewedAt: new Date().toISOString() }
-        : s
-    );
-    localStorage.setItem(STORAGE_KEYS.SUBS, JSON.stringify(subs));
-    return subs.find((s) => s.id === subId);
+    const sub = dummySubs.find((s) => s.id === subId);
+    if (sub && sub.status === "cancelled") {
+      // cancel other actives first (just in case)
+      dummySubs = dummySubs.map((s) =>
+        s.userId === sub.userId && s.status === "active"
+          ? { ...s, status: "cancelled" }
+          : s
+      );
+      sub.status = "active";
+      sub.startedAt = new Date().toISOString();
+      return Promise.resolve(sub);
+    }
+    return Promise.reject("Subscription not found or not cancelled");
   },
 
-  // user helpers (mock login)
-  getUser: async (id) => {
-    await wait(200);
-    const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || "[]");
-    return users.find((u) => u.id === id);
-  },
+  // ---------- USERS ----------
+  getUser: async (id) =>
+    Promise.resolve({ id: "u_user", name: "Demo User", role: "user" }),
 
-  listUsers: async () => {
-    await wait(200);
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || "[]");
-  },
+  listUsers: async () =>
+    Promise.resolve([
+      { id: "u_user", name: "Demo User", role: "user" },
+      { id: "u_admin", name: "Admin", role: "admin" },
+    ]),
 };

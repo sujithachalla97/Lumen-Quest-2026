@@ -1,24 +1,46 @@
 import React from "react";
+import { motion } from "framer-motion";
 
-export default function PlanCard({ plan, onSubscribe, onSelect }) {
+const featureLabels = {
+  PhoneService: "Phone Service",
+  OnlineSecurity: "Online Security",
+  OnlineBackup: "Online Backup",
+  DeviceProtection: "Device Protection",
+  TechSupport: "Tech Support",
+  StreamingTV: "Streaming TV",
+  StreamingMovies: "Streaming Movies",
+};
+
+export default function PlanCard({
+  plan,
+  onSubscribe,
+  onSelect,
+  isSubscribed,
+}) {
   return (
-    <div className="card">
-      <div className="plan-name">{plan.name}</div>
-      <div className="small mt">Quota: {plan.quotaGB} GB</div>
-      <div className="plan-price">₹ {plan.price} / month</div>
+    <motion.div
+      className="card plan-card"
+      whileHover={{ y: -6, scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="plan-header">
+        <div className="plan-name">{plan.name}</div>
+        <div className="plan-price">₹ {plan.price} / month</div>
+      </div>
 
-      <ul className="small mt">
+      <ul className="plan-features">
         {plan.features?.map((f, i) => (
-          <li key={i}>{f}</li>
+          <li key={i}>{featureLabels[f] || f}</li>
         ))}
       </ul>
 
-      <div className="mt row">
+      <div className="plan-actions">
         <button
-          className="btn btn-primary"
-          onClick={() => onSubscribe(plan.id)}
+          className={`btn btn-primary ${isSubscribed ? "disabled-btn" : ""}`}
+          disabled={isSubscribed}
+          onClick={() => !isSubscribed && onSubscribe(plan.id)}
         >
-          Subscribe
+          {isSubscribed ? "Subscribed" : "Subscribe"}
         </button>
         <button
           className="btn btn-ghost"
@@ -27,6 +49,6 @@ export default function PlanCard({ plan, onSubscribe, onSelect }) {
           View
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
