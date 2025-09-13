@@ -23,8 +23,8 @@ export function Sidebar() {
 
   return (
     <aside className="w-64 h-screen bg-white dark:bg-gray-900 shadow-lg flex flex-col">
-      <div className="p-4 text-xl font-bold text-center border-b dark:border-gray-700">
-        Admin Panel
+      <div className="p-4 text-lg font-bold text-center border-b dark:border-gray-700">
+        SMS <span className="text-primary font-normal !text-xs">(Admin)</span>
       </div>
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
