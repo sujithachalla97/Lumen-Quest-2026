@@ -75,10 +75,12 @@ Raw Data → EDA → Feature Engineering → Model Training → Evaluation → D
 ## 📈 Results & Impact
 
 ### Model Performance
-- **Best Model**: Random Forest with hyperparameter tuning
+- **Best Model**: Logistic Regression (ROC-AUC: 0.8448)
+- **F1-Score**: 0.5904
+- **Accuracy**: 80.7%
+- **Churn Detection Rate**: 52.4% of actual churners identified
 - **Cross-Validation**: Robust 5-fold validation
 - **Risk Classification**: HIGH (>0.7), MEDIUM (0.4-0.7), LOW (<0.4)
-- **Feature Importance**: Contract type, tenure, and monthly charges are top predictors
 
 ### Business Insights
 - 🚨 **27% churn rate** in telecom industry
@@ -88,11 +90,13 @@ Raw Data → EDA → Feature Engineering → Model Training → Evaluation → D
 - 📱 **Fiber optic** customers show higher churn tendency
 - 👥 **Senior citizens** have different churn patterns
 
-### Expected Business Impact
-- 📈 **15-25% reduction** in churn through targeted interventions
-- 💰 **Revenue protection** for high-value customers
+### Business Impact
+- 🎯 **52.4% churn detection rate** - identifies half of at-risk customers
+- 📊 **1,409 test customers** with 374 actual churners
+- ✅ **196 correctly identified** high-risk customers for targeted campaigns
+- 💰 **Revenue protection** through proactive retention
 - ⚡ **Automated risk scoring** reduces manual analysis
-- 🎯 **Data-driven insights** for retention strategies
+- 🎯 **Data-driven insights** for retention st
 
 ## 🔧 Usage
 
