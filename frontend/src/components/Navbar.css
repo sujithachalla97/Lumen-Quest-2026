@@ -22,7 +22,7 @@
 }
 
 .brand {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--accent);
 }
@@ -51,19 +51,83 @@
   border-radius: 2px;
 }
 
-.nav-actions {
-  display: flex;
-  align-items: center;
+/* Profile Icon */
+.profile-icon {
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  padding: 4px;
 }
 
-.user-select {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.profile-icon:hover {
+  background: #f3f4f6;
+  color: var(--accent);
 }
 
-.user-select select {
-  padding: 4px 6px;
-  border-radius: 6px;
+/* Dropdown */
+.profile-dropdown {
+  position: absolute;
+  top: 56px;
+  right: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  padding: 14px 16px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+/* Profile Info */
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+
+.profile-info strong {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.profile-info .small {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: #f9fafb;
   border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

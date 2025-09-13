@@ -7,7 +7,6 @@ import "./MySubscriptions.css";
 export default function MySubscriptions() {
   const { plans, userSubs, loading, changePlan, cancel, renew } =
     useSubscriptions();
-  const [message, setMessage] = useState("");
   const [processing, setProcessing] = useState(false);
   const [showChangeModal, setShowChangeModal] = useState(null);
 
@@ -24,13 +23,9 @@ export default function MySubscriptions() {
     setProcessing(true);
     try {
       await changePlan(subId, newPlanId);
-      setMessage("✅ Plan changed successfully");
-    } catch {
-      setMessage("⚠️ Failed to change plan");
     } finally {
       setProcessing(false);
       setShowChangeModal(null);
-      setTimeout(() => setMessage(""), 2500);
     }
   };
 
@@ -38,12 +33,8 @@ export default function MySubscriptions() {
     setProcessing(true);
     try {
       await cancel(subId);
-      setMessage("❌ Subscription cancelled");
-    } catch {
-      setMessage("⚠️ Failed to cancel");
     } finally {
       setProcessing(false);
-      setTimeout(() => setMessage(""), 2500);
     }
   };
 
@@ -51,83 +42,48 @@ export default function MySubscriptions() {
     setProcessing(true);
     try {
       await renew(subId);
-      setMessage("🔄 Subscription renewed");
-    } catch {
-      setMessage("⚠️ Failed to renew");
     } finally {
       setProcessing(false);
-      setTimeout(() => setMessage(""), 2500);
     }
   };
 
   if (loading) return <Spinner />;
 
   return (
-    <div className="subscriptions-page container">
-      <h2 className="page-title">My Subscriptions</h2>
-      {message && <div className="alert mt">{message}</div>}
-
-      {/* Current Subscription */}
-      {currentSub && (
-        <div className="sub-card">
-          <h3 className="section-title">Current Subscription</h3>
-          <div className="sub-item">
-            <div className="sub-left">
-              <h4 className="plan-name">{planMap[currentSub.planId]?.name}</h4>
-              <p className="plan-price">
-                ₹ {planMap[currentSub.planId]?.price} / month
-              </p>
-              <p className="plan-date">
-                Started: {new Date(currentSub.startedAt).toLocaleDateString()}
-              </p>
-            </div>
-
-            <div className="sub-features-list">
-              {planMap[currentSub.planId]?.features?.map((f, i) => (
-                <div key={i} className="feature-line">
-                  <span>✔</span> {f}
-                </div>
-              ))}
-            </div>
-
-            <div className="sub-actions">
-              <button
-                className="btn btn-outline small-btn"
-                onClick={() => setShowChangeModal(currentSub)}
-              >
-                Change Plan
-              </button>
-              <button
-                className="btn btn-cancel small-btn"
-                onClick={() => handleCancel(currentSub.id)}
-              >
-                Cancel
-              </button>
-            </div>
+    <div className="subscriptions-page">
+      {/* 🔹 Hero Banner same as Home/Plans */}
+      <section className="subs-hero">
+        <div className="subs-hero-overlay">
+          <div className="subs-hero-content">
+            <h1 className="subs-title">My Subscriptions</h1>
+            <p className="subs-subtitle">
+              View, manage, and renew your active and previous plans all in one
+              place.
+            </p>
           </div>
         </div>
-      )}
+      </section>
 
-      {/* Previous Subscriptions */}
-      {previousSubs.length > 0 && (
-        <div className="sub-card">
-          <h3 className="section-title">Previous Subscriptions</h3>
-          {previousSubs.map((s) => (
-            <div key={s.id} className="sub-item">
+      <div className="container">
+        {/* Current Subscription */}
+        {currentSub && (
+          <div className="sub-card">
+            <h3 className="section-title">Current Subscription</h3>
+            <div className="sub-item">
               <div className="sub-left">
                 <h4 className="plan-name">
-                  {planMap[s.planId]?.name || s.planId}
+                  {planMap[currentSub.planId]?.name}
                 </h4>
                 <p className="plan-price">
-                  ₹ {planMap[s.planId]?.price} / month
+                  ₹ {planMap[currentSub.planId]?.price} / month
                 </p>
                 <p className="plan-date">
-                  Started: {new Date(s.startedAt).toLocaleDateString()}
+                  Started: {new Date(currentSub.startedAt).toLocaleDateString()}
                 </p>
               </div>
 
               <div className="sub-features-list">
-                {planMap[s.planId]?.features?.map((f, i) => (
+                {planMap[currentSub.planId]?.features?.map((f, i) => (
                   <div key={i} className="feature-line">
                     <span>✔</span> {f}
                   </div>
@@ -136,17 +92,62 @@ export default function MySubscriptions() {
 
               <div className="sub-actions">
                 <button
-                  className="btn btn-renew small-btn"
-                  disabled={processing}
-                  onClick={() => handleRenew(s.id)}
+                  className="btn uniform-btn"
+                  onClick={() => setShowChangeModal(currentSub)}
                 >
-                  Renew
+                  Change Plan
+                </button>
+                <button
+                  className="btn uniform-btn"
+                  onClick={() => handleCancel(currentSub.id)}
+                >
+                  Cancel
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* Previous Subscriptions */}
+        {previousSubs.length > 0 && (
+          <div className="sub-card">
+            <h3 className="section-title">Previous Subscriptions</h3>
+            {previousSubs.map((s) => (
+              <div key={s.id} className="sub-item">
+                <div className="sub-left">
+                  <h4 className="plan-name">
+                    {planMap[s.planId]?.name || s.planId}
+                  </h4>
+                  <p className="plan-price">
+                    ₹ {planMap[s.planId]?.price} / month
+                  </p>
+                  <p className="plan-date">
+                    Started: {new Date(s.startedAt).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div className="sub-features-list">
+                  {planMap[s.planId]?.features?.map((f, i) => (
+                    <div key={i} className="feature-line">
+                      <span>✔</span> {f}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="sub-actions">
+                  <button
+                    className="btn uniform-btn"
+                    disabled={processing}
+                    onClick={() => handleRenew(s.id)}
+                  >
+                    Renew
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Change Plan Modal */}
       {showChangeModal && (
@@ -166,7 +167,7 @@ export default function MySubscriptions() {
                     <p>₹ {p.price} / month</p>
                   </div>
                   <button
-                    className="btn btn-primary small-btn"
+                    className="btn uniform-btn"
                     disabled={processing}
                     onClick={() => handleChange(showChangeModal.id, p.id)}
                   >

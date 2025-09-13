@@ -21,18 +21,27 @@ export default function BrowsePlans() {
   const [selected, setSelected] = useState(null);
   const [loadingId, setLoadingId] = useState(null);
   const [message, setMessage] = useState("");
+  const [showRecommendation, setShowRecommendation] = useState(false);
 
   const handleSubscribe = async (planId) => {
     try {
       setLoadingId(planId);
       await subscribe(planId);
-      setMessage("Subscribed successfully!");
+      // no message popup
     } catch (e) {
       setMessage("Failed to subscribe");
     } finally {
       setLoadingId(null);
       setTimeout(() => setMessage(null), 3000);
     }
+  };
+
+  const getRecommendedPlan = () => {
+    if (!plans || plans.length === 0) return null;
+    // Simple recommendation: Best value = highest quota/lowest price
+    return plans.reduce((best, p) =>
+      p.quotaGB / p.price > best.quotaGB / best.price ? p : best
+    );
   };
 
   if (!plans) return <Spinner />;
@@ -75,6 +84,50 @@ export default function BrowsePlans() {
                 )}
               </div>
             ))}
+          </div>
+
+          {/* ✅ Recommendation Section */}
+          <div className="recommendation-section">
+            <h3>Not sure which plan to choose?</h3>
+            <button
+              className="btn recommend-btn"
+              onClick={() => setShowRecommendation(!showRecommendation)}
+            >
+              {showRecommendation ? "Hide Recommendation" : "Recommend a Plan"}
+            </button>
+
+            {showRecommendation && (
+              <motion.div
+                className="recommendation-box"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                {getRecommendedPlan() ? (
+                  <>
+                    <h4>
+                      🎯 We recommend the{" "}
+                      <span className="highlight">
+                        {getRecommendedPlan().name}
+                      </span>{" "}
+                      plan
+                    </h4>
+                    <p>
+                      <strong>Price:</strong> ₹{getRecommendedPlan().price} /
+                      month <br />
+                      <strong>Data:</strong> {getRecommendedPlan().quotaGB} GB
+                    </p>
+                    <ul>
+                      {getRecommendedPlan().features.map((f, i) => (
+                        <li key={i}>✔ {featureLabels[f] || f}</li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p>No plans available to recommend.</p>
+                )}
+              </motion.div>
+            )}
           </div>
         </div>
       </section>

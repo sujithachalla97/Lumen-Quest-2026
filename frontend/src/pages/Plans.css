@@ -1,59 +1,220 @@
 .plans-page {
   background: #f9fafb;
   min-height: 100vh;
-  padding: 60px 20px;
+}
+
+/* ---------------- Hero Banner ---------------- */
+.plans-hero {
+  position: relative;
+  height: 40vh;
+  background: url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80")
+    center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plans-hero-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.plans-hero-content {
+  color: #fff;
 }
 
 .plans-title {
-  text-align: center;
-  font-size: 2.4rem;
+  font-size: 3rem;
   font-weight: 800;
-  color: #111827;
 }
 
 .plans-subtitle {
-  text-align: center;
-  margin: 12px auto 40px auto;
-  font-size: 1.1rem;
+  margin-top: 12px;
+  font-size: 1.05rem;
   max-width: 600px;
-  color: #4b5563;
+  margin-left: auto;
+  margin-right: auto;
+  color: #e5e7eb;
 }
 
-/* Plan Cards - like pricing tables */
-.card {
+/* ---------------- Plans Grid ---------------- */
+.plans-grid-section {
+  padding: 70px 20px;
+}
+
+.plans-grid {
+  max-width: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column; /* vertical stacking */
+  gap: 28px;
+}
+
+/* ---------------- Plan Cards ---------------- */
+.card.plan-card {
   background: white;
-  border-radius: 14px;
-  padding: 28px 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 30px;
+  padding: 28px 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 320px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
 }
 
-.card:hover {
+.card.plan-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* Header */
+.plan-header {
+  margin-bottom: 16px;
 }
 
 .plan-name {
-  font-size: 1.4rem;
+  font-size: 3rem; /* bigger size */
+  font-weight: 800;
+  color: #111827; /* pure black */
+  margin-bottom: 6px; /* tighter spacing with price */
+}
+
+.plan-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 12px;
+}
+
+/* ---------------- Features ---------------- */
+.plan-features {
+  margin-top: 18px;
+  padding: 0;
+  list-style-position: inside;
+  text-align: center;
+  color: #374151;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.plan-features li {
+  margin: 6px 0;
+  text-align: center;
+}
+
+/* Centered list version */
+.plan-features.centered {
+  list-style-position: inside;
+  padding-left: 0;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.plan-features.centered li {
+  margin: 6px 0;
+  font-size: 1rem;
+  color: #374151;
+}
+
+/* ---------------- Subscribe Button ---------------- */
+.plan-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.subscribe-btn {
+  border-radius: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: #f9fafb; /* light grey */
+  color: #111827;
+  padding: 10px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subscribe-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #111;
+}
+
+.subscribe-btn:disabled {
+  background: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.recommendation-section {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.recommend-btn {
+  margin-top: 16px;
+  padding: 14px 28px; /* bigger button */
+  border-radius: 14px;
+  background: #232856; /* ✅ modern green */
+  color: white;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+.recommend-btn:hover {
+  background: #1d4ed8;
+}
+
+.recommendation-box {
+  margin-top: 20px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.recommendation-box h2 {
+  font-size: 1.3rem;
   font-weight: 700;
   color: #1e3a8a;
 }
 
-.plan-price {
-  margin-top: 8px;
-  font-size: 1.4rem;
-  font-weight: 700;
+.recommendation-box .highlight {
   color: #2563eb;
+  font-weight: 800;
 }
 
-.card ul {
-  margin-top: 16px;
+.recommendation-box ul {
+  margin-top: 12px;
+  padding-left: 0;
+  list-style-position: inside;
   text-align: left;
-  padding-left: 20px;
-  color: #374151;
+  display: inline-block;
 }
 
-.card button {
-  margin-top: 20px;
+.recommendation-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25); /* hover glow */
+}
+
+.recommendation-box p {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #1f2937;
 }

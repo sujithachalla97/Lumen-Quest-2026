@@ -11,42 +11,41 @@ const featureLabels = {
   StreamingMovies: "Streaming Movies",
 };
 
-export default function PlanCard({
-  plan,
-  onSubscribe,
-  onSelect,
-  isSubscribed,
-}) {
+export default function PlanCard({ plan, onSubscribe, isSubscribed }) {
   return (
     <motion.div
       className="card plan-card"
       whileHover={{ y: -6, scale: 1.02 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Header */}
       <div className="plan-header">
         <div className="plan-name">{plan.name}</div>
         <div className="plan-price">₹ {plan.price} / month</div>
       </div>
 
-      <ul className="plan-features">
+      {/* Features with animation */}
+      <ul className="plan-features centered">
         {plan.features?.map((f, i) => (
-          <li key={i}>{featureLabels[f] || f}</li>
+          <motion.li
+            key={i}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+          >
+            {featureLabels[f] || f}
+          </motion.li>
         ))}
       </ul>
 
+      {/* Subscribe Button */}
       <div className="plan-actions">
         <button
-          className={`btn btn-primary ${isSubscribed ? "disabled-btn" : ""}`}
+          className="btn subscribe-btn"
           disabled={isSubscribed}
           onClick={() => !isSubscribed && onSubscribe(plan.id)}
         >
           {isSubscribed ? "Subscribed" : "Subscribe"}
-        </button>
-        <button
-          className="btn btn-ghost"
-          onClick={() => onSelect && onSelect(plan)}
-        >
-          View
         </button>
       </div>
     </motion.div>

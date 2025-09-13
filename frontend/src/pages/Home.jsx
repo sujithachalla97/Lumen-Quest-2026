@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Settings, Sparkles, ShieldCheck } from "lucide-react"; // icons
 import "./Home.css";
 
 export default function Home() {
@@ -20,7 +21,7 @@ export default function Home() {
             </h1>
             <p className="hero-subtitle">
               Browse, subscribe, upgrade, and manage all your plans at one place
-              — fast, simple, and beautiful.
+              — simple, fast, and beautiful.
             </p>
             <div className="hero-buttons">
               <Link to="/plans">
@@ -38,85 +39,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Feature Section 1 */}
-      <section className="feature-section">
-        <div className="feature-container">
-          <motion.img
-            src="https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?auto=format&fit=crop&w=900&q=80"
-            alt="Easy management"
-            className="feature-img"
-            initial={{ opacity: 0, x: -60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          />
+      {/* Feature Sections with Icons */}
+      <section className="features-wrapper">
+        <div className="feature-grid">
           <motion.div
-            className="feature-text"
-            initial={{ opacity: 0, x: 60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            className="feature-card"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
+            <Settings size={60} className="feature-icon" />
             <h2>Effortless Management</h2>
             <p>
               Subscribe, cancel, renew, or switch plans in seconds. Always stay
               in control with a clean and intuitive design.
             </p>
           </motion.div>
-        </div>
-      </section>
 
-      {/* Feature Section 2 */}
-      <section className="feature-section alt">
-        <div className="feature-container">
           <motion.div
-            className="feature-text"
-            initial={{ opacity: 0, x: -60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            className="feature-card"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
+            <Sparkles size={60} className="feature-icon" />
             <h2>Smart Recommendations</h2>
             <p>
-              AI-powered insights help you pick the best plan for your needs —
-              personalized and value-for-money.
+              AI-powered insights help you pick the best plan — personalized,
+              cost-effective, and reliable.
             </p>
           </motion.div>
-          <motion.img
-            src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9?auto=format&fit=crop&w=900&q=80"
-            alt="Smart recommendations"
-            className="feature-img"
-            initial={{ opacity: 0, x: 60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          />
-        </div>
-      </section>
 
-      {/* Feature Section 3 */}
-      <section className="feature-section">
-        <div className="feature-container">
-          <motion.img
-            src="https://images.unsplash.com/photo-1605902711622-fd2a7f4c1c7d?auto=format&fit=crop&w=900&q=80"
-            alt="Secure"
-            className="feature-img"
-            initial={{ opacity: 0, x: -60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          />
           <motion.div
-            className="feature-text"
-            initial={{ opacity: 0, x: 60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            className="feature-card"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
+            <ShieldCheck size={60} className="feature-icon" />
             <h2>Secure & Reliable</h2>
             <p>
-              Your data is safe. Role-based access ensures only you can manage
-              your subscriptions.
+              Your data stays safe. Role-based access ensures only you can
+              manage your subscriptions.
             </p>
           </motion.div>
         </div>
