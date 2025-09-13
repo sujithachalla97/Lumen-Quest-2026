@@ -1,0 +1,18 @@
+{
+  "model_path": "../models/",
+  "model_files": {
+    "model": "best_churn_model_*.pkl",
+    "scaler": "feature_scaler.pkl",
+    "features": "feature_names.pkl",
+    "metadata": "model_metadata.csv"
+  },
+  "risk_thresholds": {
+    "high_risk": 0.7,
+    "medium_risk": 0.4
+  },
+  "business_rules": {
+    "min_tenure_for_analysis": 1,
+    "max_monthly_charges": 200,
+    "default_missing_value": 0
+  }
+}
