@@ -7,6 +7,8 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
+import discountRoutes from "./routes/discountRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -25,6 +27,8 @@ app.get("/health", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api/discounts", discountRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 const PORT = process.env.PORT || 3000;
 
