@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   LineChart,
@@ -11,64 +12,61 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const stats = [
-  { label: "Active Plans", value: 12 },
-  { label: "Active Subscriptions", value: 320 },
-  { label: "Cancelled Subscriptions", value: 45 },
-  { label: "Revenue (Mock)", value: "$12,450" },
-];
-
-const subscriptionTrends = [
-  { month: "Jan", active: 120, cancelled: 10 },
-  { month: "Feb", active: 150, cancelled: 15 },
-  { month: "Mar", active: 170, cancelled: 18 },
-  { month: "Apr", active: 200, cancelled: 20 },
-  { month: "May", active: 220, cancelled: 25 },
-];
-
-const topPlans = [
-  { plan: "Basic", subscriptions: 120 },
-  { plan: "Standard", subscriptions: 180 },
-  { plan: "Premium", subscriptions: 90 },
-];
-
-
-const churnPrediction = [
-  { 
-    userId: "U001", 
-    userName: "Alice", 
-    likelihoodToCancel: 80, 
-    phone: "9876543210", 
-    email: "alice@example.com", 
-    status: "Active" 
+// --- Mock Admin Service with Data ---
+const Admin = {
+  analytics: {
+    getStats: async () => {
+      return [
+        { label: "Active Plans", value: 12 },
+        { label: "Active Subscriptions", value: 320 },
+        { label: "Cancelled Subscriptions", value: 45 },
+        { label: "Revenue (Mock)", value: "$12,450" },
+      ];
+    },
+    getSubscriptionTrends: async () => {
+      return [
+        { month: "Jan", active: 120, cancelled: 10 },
+        { month: "Feb", active: 150, cancelled: 15 },
+        { month: "Mar", active: 170, cancelled: 18 },
+        { month: "Apr", active: 200, cancelled: 20 },
+        { month: "May", active: 220, cancelled: 25 },
+      ];
+    },
+    getTopPlans: async () => {
+      return [
+        { plan: "Basic", subscriptions: 120 },
+        { plan: "Standard", subscriptions: 180 },
+        { plan: "Premium", subscriptions: 90 },
+      ];
+    },
+    predictChurn: async () => {
+      return [
+        { userId: "U001", userName: "Alice", likelihoodToCancel: 80, phone: "9876543210", email: "alice@example.com", status: "Active" },
+        { userId: "U002", userName: "Bob", likelihoodToCancel: 65, phone: "9876501234", email: "bob@example.com", status: "Inactive" },
+        { userId: "U003", userName: "Charlie", likelihoodToCancel: 40, phone: "9123456789", email: "charlie@example.com", status: "Active" },
+        { userId: "U004", userName: "David", likelihoodToCancel: 25, phone: "9988776655", email: "david@example.com", status: "Active" },
+      ];
+    },
   },
-  { 
-    userId: "U002", 
-    userName: "Bob", 
-    likelihoodToCancel: 65, 
-    phone: "9876501234", 
-    email: "bob@example.com", 
-    status: "Inactive" 
-  },
-  { 
-    userId: "U003", 
-    userName: "Charlie", 
-    likelihoodToCancel: 40, 
-    phone: "9123456789", 
-    email: "charlie@example.com", 
-    status: "Active" 
-  },
-  { 
-    userId: "U004", 
-    userName: "David", 
-    likelihoodToCancel: 25, 
-    phone: "9988776655", 
-    email: "david@example.com", 
-    status: "Active" 
-  },
-];
+};
 
 export default function Dashboard() {
+  const [stats, setStats] = useState([]);
+  const [subscriptionTrends, setSubscriptionTrends] = useState([]);
+  const [topPlans, setTopPlans] = useState([]);
+  const [churnPrediction, setChurnPrediction] = useState([]);
+
+  useEffect(() => {
+    // Simulate API calls
+    const fetchData = async () => {
+      setStats(await Admin.analytics.getStats());
+      setSubscriptionTrends(await Admin.analytics.getSubscriptionTrends());
+      setTopPlans(await Admin.analytics.getTopPlans());
+      setChurnPrediction(await Admin.analytics.predictChurn());
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Stats Cards */}

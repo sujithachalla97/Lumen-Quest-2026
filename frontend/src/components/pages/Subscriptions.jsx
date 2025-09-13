@@ -1,7 +1,12 @@
+import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Check, XIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Check, XIcon, Pencil } from "lucide-react";
 
-const subscriptions = [
+const initialSubscriptions = [
   {
     id: "s1",
     userId: "U001",
@@ -29,12 +34,43 @@ const subscriptions = [
 ];
 
 export default function Subscriptions() {
+  const [subscriptions, setSubscriptions] = useState(initialSubscriptions);
+  const [open, setOpen] = useState(false);
+  const [editSub, setEditSub] = useState(null);
+
+  const [form, setForm] = useState({
+    status: "active",
+    autoRenew: true,
+  });
+
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleEdit = (sub) => {
+    setEditSub(sub);
+    setForm({ status: sub.status, autoRenew: sub.autoRenew });
+    setOpen(true);
+  };
+
+  const handleSubmit = () => {
+    if (editSub) {
+      setSubscriptions(
+        subscriptions.map((s) =>
+          s.id === editSub.id ? { ...s, ...form } : s
+        )
+      );
+    }
+    setOpen(false);
+    setEditSub(null);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Subscriptions</h1>
-        <p className="text-sm text-gray-500">Admin View Only</p>
+        <p className="text-sm text-gray-500">Admin View & Control</p>
       </div>
 
       {/* Subscriptions Table */}
@@ -55,6 +91,7 @@ export default function Subscriptions() {
                 <th className="p-2 text-left">Start Date</th>
                 <th className="p-2 text-left">End Date</th>
                 <th className="p-2 text-left">Auto Renew</th>
+                <th className="p-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -76,9 +113,7 @@ export default function Subscriptions() {
                   </td>
                   <td
                     className={`p-2 font-semibold ${
-                      sub.status === "active"
-                        ? "text-green-600"
-                        : "text-red-600"
+                      sub.status === "active" ? "text-green-600" : "text-red-600"
                     }`}
                   >
                     {sub.status}
@@ -97,12 +132,70 @@ export default function Subscriptions() {
                       </div>
                     )}
                   </td>
+                  <td className="p-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEdit(sub)}
+                    >
+                      <Pencil className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </CardContent>
       </Card>
+
+      {/* Edit Subscription Dialog */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Subscription</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Status</Label>
+              <Select
+                value={form.status}
+                onValueChange={(val) => handleChange("status", val)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Auto Renew</Label>
+              <Select
+                value={form.autoRenew ? "true" : "false"}
+                onValueChange={(val) =>
+                  handleChange("autoRenew", val === "true")
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select auto renew" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">Enabled</SelectItem>
+                  <SelectItem value="false">Disabled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={handleSubmit}>Update Subscription</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

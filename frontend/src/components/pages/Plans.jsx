@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,41 +10,61 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Pencil, Trash2, PlusCircle, Check, XIcon } from "lucide-react";
 
-const initialPlans = [
-  {
-    id: "p1",
-    name: "Basic Plan",
-    description: "Entry level plan for casual users",
-    price: 199,
-    quota: "50GB",
-    autoRenewAllowed: true,
-    status: "active",
+// --- Mock Admin Service ---
+const Admin = {
+  plans: {
+    getAllPlans: async () => [
+      {
+        id: "p1",
+        name: "Basic Plan",
+        description: "Entry level plan for casual users",
+        price: 199,
+        quota: "50GB",
+        autoRenewAllowed: true,
+        status: "active",
+      },
+      {
+        id: "p2",
+        name: "Standard Plan",
+        description: "Best for small families",
+        price: 499,
+        quota: "200GB",
+        autoRenewAllowed: true,
+        status: "active",
+      },
+      {
+        id: "p3",
+        name: "Premium Plan",
+        description: "Unlimited access for heavy users",
+        price: 999,
+        quota: "Unlimited",
+        autoRenewAllowed: false,
+        status: "inactive",
+      },
+    ],
+    createPlan: async (plan) => ({
+      message: "Plan created successfully",
+      plan: { ...plan, id: `p${Math.floor(Math.random() * 10000)}` },
+    }),
+    updatePlan: async (id, updated) => ({
+      message: "Plan updated successfully",
+      plan: { ...updated, id },
+    }),
+    deletePlan: async (id) => ({ message: "Plan deleted successfully", id }),
   },
-  {
-    id: "p2",
-    name: "Standard Plan",
-    description: "Best for small families",
-    price: 499,
-    quota: "200GB",
-    autoRenewAllowed: true,
-    status: "active",
-  },
-  {
-    id: "p3",
-    name: "Premium Plan",
-    description: "Unlimited access for heavy users",
-    price: 999,
-    quota: "Unlimited",
-    autoRenewAllowed: false,
-    status: "inactive",
-  },
-];
+};
 
 export default function Plans() {
-  const [plans, setPlans] = useState(initialPlans);
+  const [plans, setPlans] = useState([]);
   const [open, setOpen] = useState(false);
   const [editPlan, setEditPlan] = useState(null);
 
@@ -57,26 +77,33 @@ export default function Plans() {
     status: "active",
   });
 
+  // Load initial mock data
+  useEffect(() => {
+    const fetchPlans = async () => {
+      const data = await Admin.plans.getAllPlans();
+      setPlans(data);
+    };
+    fetchPlans();
+  }, []);
+
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (editPlan) {
-      // Update existing
-      setPlans(
-        plans.map((p) =>
-          p.id === editPlan.id ? { ...form, id: editPlan.id } : p
-        )
-      );
+      // Update
+      const { plan } = await Admin.plans.updatePlan(editPlan.id, form);
+      setPlans(plans.map((p) => (p.id === plan.id ? plan : p)));
     } else {
-      // Add new
-      const newPlan = { ...form, id: `p${plans.length + 1}` };
-      setPlans([...plans, newPlan]);
+      // Create
+      const { plan } = await Admin.plans.createPlan(form);
+      setPlans([...plans, plan]);
     }
+
     setOpen(false);
     setEditPlan(null);
-    setForm({ name: "", description: "", price: "", quota: "", status: "active" });
+    resetForm();
   };
 
   const handleEdit = (plan) => {
@@ -85,8 +112,20 @@ export default function Plans() {
     setOpen(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    await Admin.plans.deletePlan(id);
     setPlans(plans.filter((p) => p.id !== id));
+  };
+
+  const resetForm = () => {
+    setForm({
+      name: "",
+      description: "",
+      price: "",
+      quota: "",
+      autoRenewAllowed: true,
+      status: "active",
+    });
   };
 
   return (
@@ -98,14 +137,7 @@ export default function Plans() {
           className="flex items-center gap-2"
           onClick={() => {
             setEditPlan(null);
-            setForm({
-              name: "",
-              description: "",
-              price: "",
-              quota: "",
-              autoRenewAllowed: true,
-              status: "active",
-            });
+            resetForm();
             setOpen(true);
           }}
         >
@@ -127,7 +159,7 @@ export default function Plans() {
                 <th className="p-2 text-left">Description</th>
                 <th className="p-2 text-left">Price</th>
                 <th className="p-2 text-left">Quota</th>
-                <th className="p-2 text-left">Autorenewd</th>
+                <th className="p-2 text-left">Autorenew</th>
                 <th className="p-2 text-left">Status</th>
                 <th className="p-2 text-left">Actions</th>
               </tr>
@@ -142,17 +174,17 @@ export default function Plans() {
                   <td className="p-2">{plan.description}</td>
                   <td className="p-2">₹{plan.price}</td>
                   <td className="p-2">{plan.quota}</td>
-                  <td className="p-2 flex items-center justify-ceter">
-                    {plan.autoRenewAllowed ? 
-                        <div className=" p-0.5 w-fit rounded-full bg-green-500">
-                            <Check className="h-4 w-4 text-white" />
-                        </div>
-                        :
-                        <div className=" p-0.5 rounded-full bg-red-500 w-fit">
-                            <XIcon className="h-4 w-4 text-white" />
-                        </div>
-                    }
-                    </td>
+                  <td className="p-2 flex items-center">
+                    {plan.autoRenewAllowed ? (
+                      <div className="p-0.5 w-fit rounded-full bg-green-500">
+                        <Check className="h-4 w-4 text-white" />
+                      </div>
+                    ) : (
+                      <div className="p-0.5 rounded-full bg-red-500 w-fit">
+                        <XIcon className="h-4 w-4 text-white" />
+                      </div>
+                    )}
+                  </td>
                   <td
                     className={`p-2 font-semibold ${
                       plan.status === "active"

@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
-  Pencil,
-  Trash2,
-  PlusCircle,
-  CalendarDays,
-} from "lucide-react";
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Pencil, Trash2, PlusCircle } from "lucide-react";
 
 const initialDiscounts = [
   {
@@ -56,21 +58,7 @@ export default function Discounts() {
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = () => {
-    if (editDiscount) {
-      // Update
-      setDiscounts(
-        discounts.map((d) =>
-          d.id === editDiscount.id ? { ...form, id: editDiscount.id } : d
-        )
-      );
-    } else {
-      // Add new
-      const newDiscount = { ...form, id: `d${discounts.length + 1}` };
-      setDiscounts([...discounts, newDiscount]);
-    }
-    setOpen(false);
-    setEditDiscount(null);
+  const resetForm = () =>
     setForm({
       code: "",
       description: "",
@@ -79,6 +67,21 @@ export default function Discounts() {
       validTo: "",
       status: "active",
     });
+
+  const handleSubmit = () => {
+    if (editDiscount) {
+      setDiscounts(
+        discounts.map((d) =>
+          d.id === editDiscount.id ? { ...form, id: editDiscount.id } : d
+        )
+      );
+    } else {
+      const newDiscount = { ...form, id: `d${discounts.length + 1}` };
+      setDiscounts([...discounts, newDiscount]);
+    }
+    setOpen(false);
+    setEditDiscount(null);
+    resetForm();
   };
 
   const handleEdit = (discount) => {
@@ -100,14 +103,7 @@ export default function Discounts() {
           className="flex items-center gap-2"
           onClick={() => {
             setEditDiscount(null);
-            setForm({
-              code: "",
-              description: "",
-              percentage: "",
-              validFrom: "",
-              validTo: "",
-              status: "active",
-            });
+            resetForm();
             setOpen(true);
           }}
         >
@@ -143,12 +139,14 @@ export default function Discounts() {
                   <td className="p-2 font-medium">{discount.code}</td>
                   <td className="p-2">{discount.description}</td>
                   <td className="p-2">{discount.percentage}%</td>
-                  <td className="p-2">{discount.validFrom}</td>
-                  <td className="p-2">{discount.validTo}</td>
+                  <td className="p-2 text-xs">{discount.validFrom}</td>
+                  <td className="p-2 text-xs">{discount.validTo}</td>
                   <td
                     className={`p-2 font-semibold ${
                       discount.status === "active"
                         ? "text-green-600"
+                        : discount.status === "inactive"
+                        ? "text-yellow-600"
                         : "text-red-600"
                     }`}
                   >
@@ -232,15 +230,19 @@ export default function Discounts() {
             </div>
             <div>
               <Label>Status</Label>
-              <select
+              <Select
                 value={form.status}
-                onChange={(e) => handleChange("status", e.target.value)}
-                className="w-full border rounded-md p-2 dark:bg-gray-800"
+                onValueChange={(val) => handleChange("status", val)}
               >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="expired">Expired</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
