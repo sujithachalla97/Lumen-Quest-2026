@@ -2,6 +2,7 @@ import express from "express";
 import {
   createPlan,
   getAllPlans,
+  getPlanById,
   getActivePlans,
   updatePlan,
   deletePlan
@@ -14,6 +15,7 @@ const router = express.Router();
 // Admin routes
 router.post("/", requireAuth, requireRole("admin"), createPlan);
 router.get("/", requireAuth, requireRole("admin"), getAllPlans);
+router.get("/:id", requireAuth, getPlanById);
 router.put("/:id", requireAuth, requireRole("admin"), updatePlan);
 router.delete("/:id", requireAuth, requireRole("admin"), deletePlan);
 
