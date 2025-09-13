@@ -58,12 +58,12 @@ Raw Data → EDA → Feature Engineering → Model Training → Evaluation → D
 ```
 
 ### Models Tested
-| Model | Performance | Use Case |
-|-------|-------------|----------|
-| **Random Forest** | **🏆 Best Overall** | **Primary Model** |
-| Gradient Boosting | High Accuracy | Feature Importance |
-| SVM | Good Generalization | Risk Classification |
-| Logistic Regression | Interpretable | Baseline Model |
+| Model | ROC-AUC | Performance |
+|-------|---------|-------------|
+| **Logistic Regression** | **0.8448** | **🏆 Best Model** |
+| Random Forest | 0.82 | Strong Performance |
+| Gradient Boosting | 0.81 | Good Accuracy |
+| SVM | 0.79 | Good Generalization |
 
 ### Key Features Used
 1. **Demographics**: `SeniorCitizen`, `Partner`, `Dependents`
