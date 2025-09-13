@@ -5,7 +5,6 @@ import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
-import planRoutes from "./routes/planRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -22,7 +21,6 @@ app.get("/health", (req, res) => {
 
 // Routes
 app.use("/auth", authRoutes);
-app.use("/api/plans", planRoutes);
 
 const PORT = process.env.PORT || 3000;
 
