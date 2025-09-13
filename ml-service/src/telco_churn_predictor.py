@@ -44,12 +44,19 @@ class TelcoChurnPredictor:
         import glob
         import os
         
-        # Find model file
+        # Find model file - prioritize logistic regression
         model_files = glob.glob(os.path.join(model_path, 'best_churn_model_*.pkl'))
         if not model_files:
             raise FileNotFoundError(f"No model file found in {model_path}")
         
-        self.model = joblib.load(model_files[0])
+        # Prioritize logistic regression model
+        logistic_model = [f for f in model_files if 'logistic_regression' in f]
+        if logistic_model:
+            model_file = logistic_model[0]
+        else:
+            model_file = model_files[0]
+        
+        self.model = joblib.load(model_file)
         self.feature_names = joblib.load(os.path.join(model_path, 'feature_names.pkl'))
         
         # Load scaler if exists
@@ -58,6 +65,48 @@ class TelcoChurnPredictor:
             self.scaler = joblib.load(scaler_path)
         else:
             self.scaler = None
+    
+    def _preprocess_customer_data(self, df):
+        """Preprocess customer data to match training format."""
+        df = df.copy()
+        
+        # Convert categorical variables to numeric where needed
+        if 'Partner' in df.columns:
+            df['Partner'] = (df['Partner'] == 'Yes').astype(int)
+        if 'Dependents' in df.columns:
+            df['Dependents'] = (df['Dependents'] == 'Yes').astype(int)
+        if 'PaperlessBilling' in df.columns:
+            df['PaperlessBilling'] = (df['PaperlessBilling'] == 'Yes').astype(int)
+        
+        # Create feature engineered columns
+        if 'tenure' in df.columns and 'MonthlyCharges' in df.columns:
+            df['ServicePenetration'] = df.get('tenure', 0) * df.get('MonthlyCharges', 0)
+        if 'MonthlyCharges' in df.columns and 'tenure' in df.columns:
+            df['ChargesTenureRatio'] = df['MonthlyCharges'] / (df['tenure'] + 1)
+        if 'Contract' in df.columns:
+            df['LongTermContract'] = (df['Contract'] != 'Month-to-month').astype(int)
+            
+        # One-hot encode categorical variables
+        categorical_mappings = {
+            'gender': ['Male'],
+            'MultipleLines': ['No phone service', 'Yes'],
+            'InternetService': ['Fiber optic', 'No'],
+            'OnlineSecurity': ['Yes'],
+            'OnlineBackup': ['Yes'],
+            'DeviceProtection': ['Yes'],
+            'TechSupport': ['Yes'],
+            'StreamingTV': ['Yes'],
+            'StreamingMovies': ['Yes'],
+            'Contract': ['One year'],
+            'PaymentMethod': ['Credit card (automatic)', 'Electronic check', 'Mailed check']
+        }
+        
+        for column, values in categorical_mappings.items():
+            if column in df.columns:
+                for value in values:
+                    df[f'{column}_{value}'] = (df[column] == value).astype(int)
+        
+        return df
     
     def predict_single_customer(self, customer_data):
         """Predict churn probability for a single customer."""
@@ -69,6 +118,9 @@ class TelcoChurnPredictor:
                 df = pd.DataFrame([customer_data])
             else:
                 df = customer_data
+            
+            # Preprocess the data to match training format
+            df = self._preprocess_customer_data(df)
             
             # Ensure all required features are present
             for feature in self.feature_names:
@@ -103,6 +155,9 @@ class TelcoChurnPredictor:
         """Predict churn for multiple customers."""
         try:
             df = customers_data.copy()
+            
+            # Preprocess the data to match training format
+            df = self._preprocess_customer_data(df)
             
             # Ensure all required features are present
             for feature in self.feature_names:
