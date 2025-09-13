@@ -1,4 +1,4 @@
-# 🎯 Customer Churn Prediction ML Project
+# 🎯 Customer Churn Prediction ML Feature
 
 A comprehensive machine learning project that predicts customer churn for telecom companies using the Telco Customer Churn dataset. The project includes end-to-end ML pipeline implemented in Jupyter notebooks from data exploration to production-ready prediction interface.
 
