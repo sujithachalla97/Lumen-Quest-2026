@@ -1,0 +1,2 @@
+original_shape,final_shape,features_created,churn_rate,total_features,categorical_encoded,features_scaled
+"(7043, 31)","(7043, 25)",-6,0.2653698707936959,24,15,13

@@ -1,0 +1,2 @@
+model_name,model_type,requires_scaling,roc_auc_score,f1_score,accuracy,precision,recall,features_count,training_samples,test_samples
+Logistic Regression,LogisticRegression,True,0.8447983673047612,0.5903614457831325,0.8069552874378992,0.6758620689655173,0.5240641711229946,24,5634,1409
